@@ -1,6 +1,13 @@
 # NC-Switches
 
-For now, this folder holds 4 different programs, all with the aim of performing Network Coding operations, specifically the enconding in the P4 switches. All these solutions are based on the Russian Peasant Algorithm, a more compute intensive way of performing finite field multiplication, not bound by the size of the log and anti-log tables.
+This folder holds different programs, all with the aim of performing Finite Field Operations in Programmable Switches. The P4 program are compiled for the Tofino architecture, and the Spatial program is for the Taurus architecture, where we are trying to perform finite field operations with bigger fields.
+The main aim of this repo is to perform Network Coding, specially encoding. As such, some versions perform several multiplications in parallel, and then sum them together.
+
+Any question feel free to reach me @<daniel.g.seara@tecnico.ulisboa.pt>
+
+## 0 - Table multiplication and division
+
+[Table_2Operands_Mult_Div](./Table_2Operands_Mult_Div/p4src/ff_mult_table.p4) - This version is a base version showing how to perform finite field multiplication and division using log, antilog and inverse tables. It currently supports GF(256) but it can be extended to GF(65536) if the tables are added.
 
 ## 1 - Simple multiplication
 
