@@ -11,6 +11,7 @@
 #define HIGH_BIT_MASK 128
 
 const bit<16> TYPE_CODING = 0x1234;
+const bit<16> TYPE_RESPONSE= 0x2345;
 
 typedef bit<9> egressSpec_t;
 typedef bit<48> macAddr_t;
@@ -38,11 +39,14 @@ header ff_calc_t {
     bit<8> x2;
     bit<8> x3;
     bit<8> x4;
-    bit<8> result_1;
-    bit<8> result_2;
-    bit<8> result_3;
-    bit<8> result_4;
-    bit<8> result_sum;
+}
+
+header exit_ff_calc_h{
+    bit<8>  coef1;
+    bit<8>  coef2;
+    bit<8>  coef3;
+    bit<8>  coef4;
+    bit<8>  result;
 }
 
 header port_h {
@@ -62,6 +66,10 @@ header bridge_h {
     bit<8> x4_part;
     bit<8> coef4_part;
     bit<8> result4_part;
+    bit<8> coef1;
+    bit<8> coef2;
+    bit<8> coef3;
+    bit<8> coef4;
 }
 
 
@@ -70,17 +78,17 @@ header bridge_h {
  **************  I N G R E S S   P R O C E S S I N G   *******************
  *************************************************************************/
  
-    /***********************  H E A D E R S  ************************/
+/***********************  H E A D E R S  ************************/
 
 struct my_ingress_headers_t {
-    bridge_h    bridge;
-    ethernet_h  ethernet;
-    //seed_h      seed;
-    ff_calc_t   ff_calc;
-    port_h      port;
+    bridge_h        bridge;
+    ethernet_h      ethernet;
+    //seed_h        seed;
+    ff_calc_t       ff_calc;
+    port_h          port;
 }
 
-    /******  G L O B A L   I N G R E S S   M E T A D A T A  *********/
+/******  G L O B A L   I N G R E S S   M E T A D A T A  *********/
 
 struct mul_metadata_t {
     bit<8>      x;
@@ -95,14 +103,9 @@ struct my_ingress_metadata_t {
     mul_metadata_t  mult_properties_4;
 }
 
-struct coef_t {
-    bit<8> coef_1;
-    bit<8> coef_2;
-    bit<8> coef_3;
-    bit<8> coef_4;
-}
 
-    /***********************  P A R S E R  **************************/
+
+/***********************  P A R S E R  **************************/
 parser IngressParser(packet_in        pkt,
     /* User */    
     out my_ingress_headers_t          hdr,
@@ -160,7 +163,7 @@ control Ingress(
     inout ingress_intrinsic_metadata_for_deparser_t  ig_dprsr_md,
     inout ingress_intrinsic_metadata_for_tm_t        ig_tm_md)
 {
-    //Random<bit<8>>() rdn;
+    Random<bit<8>>() rdn;
 
     action action_ff_mult(inout bit<8> coef_1, inout bit<8> coef_2, inout bit<8> coef_3, inout bit<8> coef_4) {
         
@@ -217,15 +220,25 @@ control Ingress(
         bit<8> low_bit_3;
         bit<8> low_bit_4;
 
-        // bit<8> coef_1 = rdn.get();
-        // bit<8> coef_2 = rdn.get();
-        // bit<8> coef_3 = rdn.get();
-        // bit<8> coef_4 = rdn.get();
+        hdr.bridge.setValid();
 
-        bit<8> coef_1 = 0x02;
-        bit<8> coef_2 = 0x02;
-        bit<8> coef_3 = 0x02;
-        bit<8> coef_4 = 0x02;
+        hdr.bridge.coef1 = rdn.get(); 
+        hdr.bridge.coef2 = rdn.get(); 
+        hdr.bridge.coef3 = rdn.get(); 
+        hdr.bridge.coef4 = rdn.get(); 
+
+        bit<8> coef_1 = hdr.bridge.coef1;
+        bit<8> coef_2 = hdr.bridge.coef2;
+        bit<8> coef_3 = hdr.bridge.coef3;
+        bit<8> coef_4 = hdr.bridge.coef4;
+
+        // bit<8> coef_1 = 0;
+        // bit<8> coef_2 = 8;
+        // bit<8> coef_3 = 2;
+        // bit<8> coef_4 = 224;
+
+        // Save the used coefficients in the bridge header
+        
 
         table_forward.apply();
 
@@ -377,7 +390,7 @@ control Ingress(
             meta.mult_properties_4.x = meta.mult_properties_4.x ^ IRRED_POLY;
         }
 
-        hdr.bridge.setValid();
+        
 
         hdr.bridge.x1_part = meta.mult_properties_1.x;
         hdr.bridge.coef1_part = coef_1;
@@ -409,7 +422,9 @@ control IngressDeparser(packet_out pkt,
     in    ingress_intrinsic_metadata_for_deparser_t  ig_dprsr_md)
 {
     apply {
-        pkt.emit(hdr);
+        pkt.emit(hdr.bridge);
+        pkt.emit(hdr.ethernet);
+        pkt.emit(hdr.port);
     }
 }
 
@@ -422,14 +437,22 @@ control IngressDeparser(packet_out pkt,
 
 struct my_egress_headers_t {
     ethernet_h  ethernet;
-    ff_calc_t   ff_calc;
+    exit_ff_calc_h  exit_ff_calc;
     port_h      port;
+}
+
+struct coef_t {
+    bit<8>  coef_1;
+    bit<8>  coef_2;
+    bit<8>  coef_3;
+    bit<8>  coef_4;
 }
 
     /********  G L O B A L   E G R E S S   M E T A D A T A  *********/
 
 struct my_egress_metadata_t {
     coef_t          coeffs;
+    coef_t          original_coeffs;
     mul_metadata_t  mult_properties_1;
     mul_metadata_t  mult_properties_2;
     mul_metadata_t  mult_properties_3;
@@ -462,6 +485,11 @@ parser EgressParser(packet_in        pkt,
         meta.coeffs.coef_3 = bridge.coef3_part;
         meta.coeffs.coef_4 = bridge.coef4_part;
 
+        meta.original_coeffs.coef_1 = bridge.coef1;
+        meta.original_coeffs.coef_2 = bridge.coef2;
+        meta.original_coeffs.coef_3 = bridge.coef3;
+        meta.original_coeffs.coef_4 = bridge.coef4;
+
         meta.mult_properties_1.x = bridge.x1_part;
         meta.mult_properties_1.part_result = bridge.result1_part;
         meta.mult_properties_1.high_bit_f = 0;
@@ -484,15 +512,8 @@ parser EgressParser(packet_in        pkt,
 
     state parse_ethernet {
         pkt.extract(hdr.ethernet);
-        transition select(hdr.ethernet.ether_type) {
-            TYPE_CODING: parse_ff_calc;
-            default: reject;
-        }
-    }
-
-    state parse_ff_calc {
-        pkt.extract(hdr.ff_calc);
         transition parse_port;
+
     }
 
     state parse_port {
@@ -707,21 +728,33 @@ control Egress(
             meta.mult_properties_4.x = meta.mult_properties_4.x ^ IRRED_POLY;
         }
 
-        // NOTE: These options are exclusive. You either uncomment one or the other. If you select both there will be an allocation error
-        // Uncomment these 4 lines if you want to see the results of the 4 multiplications
-        hdr.ff_calc.result_1 = meta.mult_properties_1.part_result;
-        hdr.ff_calc.result_2 = meta.mult_properties_2.part_result;
-        hdr.ff_calc.result_3 = meta.mult_properties_3.part_result;
-        hdr.ff_calc.result_4 = meta.mult_properties_4.part_result;
+        hdr.ethernet.ether_type = TYPE_RESPONSE;
 
-        // Uncomment these 5 lines if you want the result of the sum of the 4 multiplications
-        // MAP-REDUCE
-        // bit<8> first;
-        // bit<8> second;
+        hdr.exit_ff_calc.setValid();
+        hdr.exit_ff_calc.coef1 = meta.original_coeffs.coef_1;
+        hdr.exit_ff_calc.coef2 = meta.original_coeffs.coef_2;
+        hdr.exit_ff_calc.coef3 = meta.original_coeffs.coef_3;
+        hdr.exit_ff_calc.coef4 = meta.original_coeffs.coef_4;
 
-        // xor_sum(first,  meta.mult_properties_1.part_result,  meta.mult_properties_2.part_result);
-        // xor_sum(second, meta.mult_properties_3.part_result,  meta.mult_properties_4.part_result);
-        // xor_sum(hdr.ff_calc.result_sum, first, second); 
+        // Select the flag you want
+        // RESULT OF THE MULTIPLICATIONS
+        #if defined(ONLY_MULT)
+        hdr.exit_ff_calc.coef1 = meta.mult_properties_1.part_result;
+        hdr.exit_ff_calc.coef2 = meta.mult_properties_2.part_result;
+        hdr.exit_ff_calc.coef3 = meta.mult_properties_3.part_result;
+        hdr.exit_ff_calc.coef4 = meta.mult_properties_4.part_result;
+
+        // SUM OF THE MULTIPLICATIONS
+        #elif defined(SUM_MULT)
+        bit<8> first;
+        bit<8> second;
+
+        xor_sum(first,  meta.mult_properties_1.part_result,  meta.mult_properties_2.part_result);
+        xor_sum(second, meta.mult_properties_3.part_result,  meta.mult_properties_4.part_result);
+        // hdr.exit_ff_calc.coef1 = first;
+        // hdr.exit_ff_calc.coef2 = second;
+        xor_sum(hdr.exit_ff_calc.result, first, second);
+        #endif 
 
     }
 }
@@ -736,7 +769,9 @@ control EgressDeparser(packet_out pkt,
     in    egress_intrinsic_metadata_for_deparser_t  eg_dprsr_md)
 {
     apply {
-        pkt.emit(hdr);
+        pkt.emit(hdr.ethernet);
+        pkt.emit(hdr.exit_ff_calc);
+        pkt.emit(hdr.port);
     }
 }
 
