@@ -12,6 +12,11 @@
 
 const bit<16> TYPE_CODING = 0x1234;
 const bit<16> TYPE_RESPONSE= 0x2345;
+#if defined(F_COEF)
+const bit<8> COEF = F_COEF;
+#else
+const bit<8> COEF = 1;
+#endif
 
 typedef bit<9> egressSpec_t;
 typedef bit<48> macAddr_t;
@@ -163,7 +168,6 @@ control Ingress(
     inout ingress_intrinsic_metadata_for_deparser_t  ig_dprsr_md,
     inout ingress_intrinsic_metadata_for_tm_t        ig_tm_md)
 {
-    Random<bit<8>>() rdn;
 
     action action_ff_mult(inout bit<8> coef_1, inout bit<8> coef_2, inout bit<8> coef_3, inout bit<8> coef_4) {
         
@@ -222,10 +226,10 @@ control Ingress(
 
         hdr.bridge.setValid();
 
-        hdr.bridge.coef1 = rdn.get(); 
-        hdr.bridge.coef2 = rdn.get(); 
-        hdr.bridge.coef3 = rdn.get(); 
-        hdr.bridge.coef4 = rdn.get(); 
+        hdr.bridge.coef1 = COEF; 
+        hdr.bridge.coef2 = COEF; 
+        hdr.bridge.coef3 = COEF; 
+        hdr.bridge.coef4 = COEF; 
 
         bit<8> coef_1 = hdr.bridge.coef1;
         bit<8> coef_2 = hdr.bridge.coef2;
@@ -731,30 +735,30 @@ control Egress(
         hdr.ethernet.ether_type = TYPE_RESPONSE;
 
         hdr.exit_ff_calc.setValid();
-        hdr.exit_ff_calc.coef1 = meta.original_coeffs.coef_1;
-        hdr.exit_ff_calc.coef2 = meta.original_coeffs.coef_2;
-        hdr.exit_ff_calc.coef3 = meta.original_coeffs.coef_3;
-        hdr.exit_ff_calc.coef4 = meta.original_coeffs.coef_4;
+        // hdr.exit_ff_calc.coef1 = meta.original_coeffs.coef_1;
+        // hdr.exit_ff_calc.coef2 = meta.original_coeffs.coef_2;
+        // hdr.exit_ff_calc.coef3 = meta.original_coeffs.coef_3;
+        // hdr.exit_ff_calc.coef4 = meta.original_coeffs.coef_4;
 
         // Select the flag you want
         // RESULT OF THE MULTIPLICATIONS
-        #if defined(ONLY_MULT)
+        //#if defined(ONLY_MULT)
         hdr.exit_ff_calc.coef1 = meta.mult_properties_1.part_result;
         hdr.exit_ff_calc.coef2 = meta.mult_properties_2.part_result;
         hdr.exit_ff_calc.coef3 = meta.mult_properties_3.part_result;
         hdr.exit_ff_calc.coef4 = meta.mult_properties_4.part_result;
 
         // SUM OF THE MULTIPLICATIONS
-        #elif defined(SUM_MULT)
-        bit<8> first;
-        bit<8> second;
+        // #elif defined(SUM_MULT)
+        // bit<8> first;
+        // bit<8> second;
 
-        xor_sum(first,  meta.mult_properties_1.part_result,  meta.mult_properties_2.part_result);
-        xor_sum(second, meta.mult_properties_3.part_result,  meta.mult_properties_4.part_result);
-        // hdr.exit_ff_calc.coef1 = first;
-        // hdr.exit_ff_calc.coef2 = second;
-        xor_sum(hdr.exit_ff_calc.result, first, second);
-        #endif 
+        // xor_sum(first,  meta.mult_properties_1.part_result,  meta.mult_properties_2.part_result);
+        // xor_sum(second, meta.mult_properties_3.part_result,  meta.mult_properties_4.part_result);
+        // // hdr.exit_ff_calc.coef1 = first;
+        // // hdr.exit_ff_calc.coef2 = second;
+        // xor_sum(hdr.exit_ff_calc.result, first, second);
+        // #endif 
 
     }
 }
