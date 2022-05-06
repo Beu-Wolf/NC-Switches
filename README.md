@@ -11,15 +11,19 @@ Any question feel free to reach me @<daniel.g.seara@tecnico.ulisboa.pt>
 
 ## 1 - Simple multiplication
 
-[RPA_2Operands_No_Sum](./RPA_2Operands_No_Sum/rpa_nc.p4RPA) - This version just performs a simple finite field multiplication, in GF(256), of 2 operands, `a` and `b`, which are set in the packet. It outputs the result
+[RPA_2Operands_No_Sum](./RPA_2Operands_No_Sum/rpa_nc.p4RPA) - This version just performs a simple finite field multiplication, in GF(256), of 2 operands, `a` and `b`, which are set in the packet. It outputs the result.
 
-## 2 - Simple division
+## 2.1 - Simple division using direct algorithm
 
-[Division_2Operands_FF8](./Division_2Operands_FF8/p4src/ff_div_nd.p4) - This version performs a simple finite field division, in GF(8), of 2 operands, `a` and `b`, which are set in the packet. The algorithm used is a direct division algorithm from [here](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=922162) It outputs the result.
+[Division_2Operands_FF8](./Division_2Operands_FF8/p4src/ff_div_nd.p4) - This version performs a simple finite field division, in GF(8), of 2 operands, `a` and `b`, which are set in the packet. The algorithm used is a direct division algorithm from [here](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=922162). It outputs the result.
+
+## 2.2 - Simple division by finding the inverse and multiplying
+
+[Division_by_Inverse_2Operands_FF8](./Division_2Operands_FF8/p4src/ff_div_nd.p4) - This version performs a simple finite field division, in GF(8), of 2 operands `a` and `b`, which are set in the packet. The operation is performed by first finding the inverse of operand `b` and then multiplying `a` by that value. This is because `a/b = a*b`<sup>`-1`</sup>. It outputs the result.
 
 ## 3 - Simple inversion
 
-[Inverse_FF16](./Inverse_FF16/p4src/ff_16_inv.p4) - This version performs a simple inversion algorithm, in GF(16), meaning, for a value `a` set in the packet, it finds `a`<sup>`-1`</sup>. The algorithm used can be found [here](https://www.lirmm.fr/arith18/papers/kobayashi-AlgorithmInversionUsingPolynomialMultiplyInstruction.pdf)
+[Inverse_FF16](./Inverse_FF16/p4src/ff_16_inv.p4) - This version performs a simple inversion algorithm, in GF(16), meaning, for a value `a` set in the packet, it finds `a`<sup>`-1`</sup>. The algorithm used can be found [here](https://www.lirmm.fr/arith18/papers/kobayashi-AlgorithmInversionUsingPolynomialMultiplyInstruction.pdf). It outputs the result.
 
 ## 4 - Multiplication of 4 Symbols at the same time
 
