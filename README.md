@@ -39,6 +39,10 @@ Any question feel free to reach me @<daniel.g.seara@tecnico.ulisboa.pt>
 
 [RPA_Taurus_Mult4_Sum](./RPA_Taurus_Switch/RPA_Taurus_Mul4_Sum/FFMult.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus, the paper about Map Reduce operations in the data plane at line-rate. We are in the process of talking to one of the authors to get more help and fully flesh out a solution.
 
+## Bonus - Maximum simultaneous multiplications
+
+[MaxOperands_Mult](./MaxOperands_Mult/) - This folder contains `.py` generators capable of producing a valid `.p4` program to run in Tofino that performs several multiplications in parallel. With these generators, we can easily see the maximum number of simultaneous operations that Tofino can execute in parallel. For the Table multiplication, go [here](./MaxOperands_Mult/table_mult/bfrt_python/gen_table_mult_p4.py) and for the RPA multiplication, go [here](./MaxOperands_Mult/rpa_mult/bfrt_python/gen_rpa_mult_p4.py).
+
 ## Some Considerations
 
 There are some limitations of course. Due to the operations necessary for the Russian Peasant Algorithm and the stages used, there is no way to do a finite field bigger than GF(256) and multiplying more than 4 symbols at the same time.
