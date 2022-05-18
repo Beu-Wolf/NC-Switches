@@ -19,7 +19,7 @@ Any question feel free to reach me @<daniel.g.seara@tecnico.ulisboa.pt>
 
 ## 2.2 - Simple division by finding the inverse and multiplying
 
-[Division_by_Inverse_2Operands_FF8](./Division_2Operands_FF8/p4src/ff_div_nd.p4) - This version performs a simple finite field division, in GF(8), of 2 operands `a` and `b`, which are set in the packet. The operation is performed by first finding the inverse of operand `b` and then multiplying `a` by that value. This is because `a/b = a*b`<sup>`-1`</sup>. It outputs the result.
+[Division_by_Inverse_2Operands_FF8](./Division_by_Inverse_2Operands_FF8/p4src/ff_div_inv.p4) - This version performs a simple finite field division, in GF(8), of 2 operands `a` and `b`, which are set in the packet. The operation is performed by first finding the inverse of operand `b` and then multiplying `a` by that value. This is because `a/b = a*b`<sup>`-1`</sup>. It outputs the result.
 
 ## 3 - Simple inversion
 
