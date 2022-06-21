@@ -35,9 +35,13 @@ Any question feel free to reach me @<daniel.g.seara@tecnico.ulisboa.pt>
 
 **NOTE:** As of right now, the RPA_P4_Mult4_Sum_Rnd_Coeffs.p4 is selecting random coefficients for each packet that arrives. If we want to use the same for more than 1 packet, we need to move the coefficients to registers
 
-## 6 - Multiplication of 4 Symbols and summation using Taurus
+## 6 - Simple multiplication using Taurus
 
-[RPA_Taurus_Mult4_Sum](./RPA_Taurus_Switch/RPA_Taurus_Mul4_Sum/FFMult.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus, the paper about Map Reduce operations in the data plane at line-rate. We are in the process of talking to one of the authors to get more help and fully flesh out a solution.
+[RPA_Taurus_Mult2_No_Sum](./RPA_Taurus_Switch/RPA_Taurus_2Operands/FFMult_It_Pipe.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus. This PoC performs a normal finite field multiplication between 2 operands, using RPA, in field GF(256). The program compiles but, as of yet, we haven't tested it in a Taurus simulation to extract any meaningfull results.
+
+## 7 - Multiplication of 4 Symbols and summation using Taurus
+
+[RPA_Taurus_Mult4_Sum](./RPA_Taurus_Switch/RPA_Taurus_Mul4_Sum/FFMult.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus, where we do 4 multiplications and sum them together, like a common Network Coding encoding operation. Although it compiles, we haven't actually tested it in a Taurus simulation to extract meaningfull results.
 
 ## Bonus - Maximum simultaneous multiplications
 
