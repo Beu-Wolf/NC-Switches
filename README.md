@@ -37,11 +37,17 @@ Any question feel free to reach me @<daniel.g.seara@tecnico.ulisboa.pt>
 
 ## 6 - Simple multiplication using Taurus
 
-[RPA_Taurus_Mult2_No_Sum](./RPA_Taurus_Switch/RPA_Taurus_2Operands/FFMult_It_Pipe.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus. This PoC performs a normal finite field multiplication between 2 operands, using RPA, in field GF(256). The program compiles but, as of yet, we haven't tested it in a Taurus simulation to extract any meaningfull results.
+[RPA_Taurus_Mult2_No_Sum](./FFA_Taurus_Switch/RPA_Taurus_2Operands/FFMult_It_Pipe.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus. This PoC performs a normal finite field multiplication between 2 operands, using RPA, in field GF(256). The program compiles but, as of yet, we haven't tested it in a Taurus simulation to extract any meaningfull results.
 
 ## 7 - Multiplication of 4 Symbols and summation using Taurus
 
-[RPA_Taurus_Mult4_Sum](./RPA_Taurus_Switch/RPA_Taurus_Mul4_Sum/FFMult.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus, where we do 4 multiplications and sum them together, like a common Network Coding encoding operation. Although it compiles, we haven't actually tested it in a Taurus simulation to extract meaningfull results.
+[RPA_Taurus_Mult4_Sum](./FFA_Taurus_Switch/RPA_Taurus_Mul4_Sum/FFMult.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus, where we do 4 multiplications and sum them together, like a common Network Coding encoding operation. Although it compiles, we haven't actually tested it in a Taurus simulation to extract meaningfull results.
+
+## 8 - Simple division using Taurus
+
+[EBd_Taurus_Div2_No_Sum](./FFA_Taurus_Switch/EBd_Taurus_2Operands/FFDiv_It_Pipe.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus.
+This PoC performs normal finite field division betwenn 2 operands, using the EBd algorithm, in the field GF(256). The program compiles but as not been tested yet
+to extract any meaningfull metrics.
 
 ## Bonus - Maximum simultaneous multiplications
 
