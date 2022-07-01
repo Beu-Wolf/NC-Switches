@@ -46,8 +46,12 @@ Any question feel free to reach me @<daniel.g.seara@tecnico.ulisboa.pt>
 ## 8 - Simple division using Taurus
 
 [EBd_Taurus_Div2_No_Sum](./FFA_Taurus_Switch/EBd_Taurus_2Operands/FFDiv_It_Pipe.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus.
-This PoC performs normal finite field division betwenn 2 operands, using the EBd algorithm, in the field GF(256). The program compiles but as not been tested yet
+This PoC performs normal finite field division betwenn 2 operands, using the EBd algorithm, in the field GF(256). The program compiles but has not been tested yet
 to extract any meaningfull metrics.
+
+## 9 - Simple inversion using Taurus
+
+[Inv_Taurus_Div2_No_Sum](./FFA_Taurus_Switch/Inv_Taurus_2Operands/FFInv_It_Pipe.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus. This PoC performs a normal finite field inversion of an operand, using the inversion algorithm, in the field GF(256). The program compiles but has not been tested yet to extract any meaningfull metrics.
 
 ## Bonus - Maximum simultaneous multiplications
 
