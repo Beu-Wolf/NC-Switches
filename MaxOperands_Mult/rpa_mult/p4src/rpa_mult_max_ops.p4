@@ -40,10 +40,22 @@ header ff_calc_t {
     bit<8> f;
     bit<8> g;
     bit<8> h;
+    bit<8> i;
+    bit<8> j;
+    bit<8> k;
+    bit<8> l;
+    bit<8> m;
+    bit<8> n;
+    bit<8> o;
+    bit<8> p;
     bit<8> result_0;
     bit<8> result_1;
     bit<8> result_2;
     bit<8> result_3;
+    bit<8> result_4;
+    bit<8> result_5;
+    bit<8> result_6;
+    bit<8> result_7;
 }
 
 header port_h {
@@ -67,22 +79,6 @@ struct my_ingress_headers_t {
     /******  G L O B A L   I N G R E S S   M E T A D A T A  *********/
 
 struct my_ingress_metadata_t {
-    bit<8> a;
-    bit<8> b;
-    bit<8> c;
-    bit<8> d;
-    bit<8> e;
-    bit<8> f;
-    bit<8> g;
-    bit<8> h;
-    bit<8> result_0;
-    bit<8> result_1;
-    bit<8> result_2;
-    bit<8> result_3;
-    bit<8> high_bit_f_0; 
-    bit<8> high_bit_f_1; 
-    bit<8> high_bit_f_2; 
-    bit<8> high_bit_f_3; 
 }
 
     /***********************  P A R S E R  **************************/
@@ -110,24 +106,6 @@ parser IngressParser(packet_in        pkt,
 
     state parse_ff_calc {
         pkt.extract(hdr.ff_calc);
-        
-        meta.a = hdr.ff_calc.a;
-        meta.b = hdr.ff_calc.b;
-        meta.c = hdr.ff_calc.c;
-        meta.d = hdr.ff_calc.d;
-        meta.e = hdr.ff_calc.e;
-        meta.f = hdr.ff_calc.f;
-        meta.g = hdr.ff_calc.g;
-        meta.h = hdr.ff_calc.h;
-        meta.result_0 = 0;
-        meta.result_1 = 0;
-        meta.result_2 = 0;
-        meta.result_3 = 0;
-        meta.high_bit_f_0 = 0;
-        meta.high_bit_f_1 = 0;
-        meta.high_bit_f_2 = 0;
-        meta.high_bit_f_3 = 0;
-        
         transition parse_port;
     }
 
@@ -149,31 +127,74 @@ control Ingress(
     inout ingress_intrinsic_metadata_for_deparser_t  ig_dprsr_md,
     inout ingress_intrinsic_metadata_for_tm_t        ig_tm_md)
 {
+    
+    bit<8> high_bit_f_0;
+    bit<8> high_bit_f_1;
+    bit<8> high_bit_f_2;
+    bit<8> high_bit_f_3;
+    bit<8> high_bit_f_4;
+    bit<8> high_bit_f_5;
+    bit<8> high_bit_f_6;
+    bit<8> high_bit_f_7;
+
+    bit<8> low_bit_f_0;
+    bit<8> low_bit_f_1;
+    bit<8> low_bit_f_2;
+    bit<8> low_bit_f_3;
+    bit<8> low_bit_f_4;
+    bit<8> low_bit_f_5;
+    bit<8> low_bit_f_6;
+    bit<8> low_bit_f_7;
+    
     action action_ff_mult() {
         
         // ELEMENT 0
-		meta.high_bit_f_0 = meta.a & HIGH_BIT_MASK;
+		high_bit_f_0 = hdr.ff_calc.a & HIGH_BIT_MASK;
 
-		meta.a = meta.a << 1;
-		meta.b = meta.b >> 1;
+		hdr.ff_calc.a = hdr.ff_calc.a << 1;
+		hdr.ff_calc.b = hdr.ff_calc.b >> 1;
 
         // ELEMENT 1
-		meta.high_bit_f_1 = meta.c & HIGH_BIT_MASK;
+		high_bit_f_1 = hdr.ff_calc.c & HIGH_BIT_MASK;
 
-		meta.c = meta.c << 1;
-		meta.d = meta.d >> 1;
+		hdr.ff_calc.c = hdr.ff_calc.c << 1;
+		hdr.ff_calc.d = hdr.ff_calc.d >> 1;
 
         // ELEMENT 2
-		meta.high_bit_f_2 = meta.e & HIGH_BIT_MASK;
+		high_bit_f_2 = hdr.ff_calc.e & HIGH_BIT_MASK;
 
-		meta.e = meta.e << 1;
-		meta.f = meta.f >> 1;
+		hdr.ff_calc.e = hdr.ff_calc.e << 1;
+		hdr.ff_calc.f = hdr.ff_calc.f >> 1;
 
         // ELEMENT 3
-		meta.high_bit_f_3 = meta.g & HIGH_BIT_MASK;
+		high_bit_f_3 = hdr.ff_calc.g & HIGH_BIT_MASK;
 
-		meta.g = meta.g << 1;
-		meta.h = meta.h >> 1;
+		hdr.ff_calc.g = hdr.ff_calc.g << 1;
+		hdr.ff_calc.h = hdr.ff_calc.h >> 1;
+
+        // ELEMENT 4
+		high_bit_f_4 = hdr.ff_calc.i & HIGH_BIT_MASK;
+
+		hdr.ff_calc.i = hdr.ff_calc.i << 1;
+		hdr.ff_calc.j = hdr.ff_calc.j >> 1;
+
+        // ELEMENT 5
+		high_bit_f_5 = hdr.ff_calc.k & HIGH_BIT_MASK;
+
+		hdr.ff_calc.k = hdr.ff_calc.k << 1;
+		hdr.ff_calc.l = hdr.ff_calc.l >> 1;
+
+        // ELEMENT 6
+		high_bit_f_6 = hdr.ff_calc.m & HIGH_BIT_MASK;
+
+		hdr.ff_calc.m = hdr.ff_calc.m << 1;
+		hdr.ff_calc.n = hdr.ff_calc.n >> 1;
+
+        // ELEMENT 7
+		high_bit_f_7 = hdr.ff_calc.o & HIGH_BIT_MASK;
+
+		hdr.ff_calc.o = hdr.ff_calc.o << 1;
+		hdr.ff_calc.p = hdr.ff_calc.p >> 1;
 
 
 
@@ -182,6 +203,7 @@ control Ingress(
 
     action action_forward(PortId_t port) {
         ig_tm_md.ucast_egress_port = port;
+        action_ff_mult();
     }
 
     table table_forward {
@@ -189,187 +211,278 @@ control Ingress(
             hdr.port.port_num: exact;
         }
         actions = {
-            action_forward;
+            action_forward; action_ff_mult();
         }
         size = 65536;
+        default_action = action_ff_mult();
     }
 
     
 
     apply {
-        bit<8> low_bit_f_0;
-        bit<8> low_bit_f_1;
-        bit<8> low_bit_f_2;
-        bit<8> low_bit_f_3;
-
-        table_forward.apply();
-
         // PASS 1
-        low_bit_f_0 = meta.b & 0x1;
-        low_bit_f_1 = meta.d & 0x1;
-        low_bit_f_2 = meta.f & 0x1;
-        low_bit_f_3 = meta.h & 0x1;
+        low_bit_f_0 = hdr.ff_calc.b & 0x1;
+        low_bit_f_1 = hdr.ff_calc.d & 0x1;
+        low_bit_f_2 = hdr.ff_calc.f & 0x1;
+        low_bit_f_3 = hdr.ff_calc.h & 0x1;
+        low_bit_f_4 = hdr.ff_calc.j & 0x1;
+        low_bit_f_5 = hdr.ff_calc.l & 0x1;
+        low_bit_f_6 = hdr.ff_calc.n & 0x1;
+        low_bit_f_7 = hdr.ff_calc.p & 0x1;
         
         // If low bit here
 		if (low_bit_f_0 != 0)
-			meta.result_0 = meta.result_0 ^ meta.a;
+			hdr.ff_calc.result_0 = hdr.ff_calc.result_0 ^ hdr.ff_calc.a;
 
 		if (low_bit_f_1 != 0)
-			meta.result_1 = meta.result_1 ^ meta.c;
+			hdr.ff_calc.result_1 = hdr.ff_calc.result_1 ^ hdr.ff_calc.c;
 
 		if (low_bit_f_2 != 0)
-			meta.result_2 = meta.result_2 ^ meta.e;
+			hdr.ff_calc.result_2 = hdr.ff_calc.result_2 ^ hdr.ff_calc.e;
 
 		if (low_bit_f_3 != 0)
-			meta.result_3 = meta.result_3 ^ meta.g;
+			hdr.ff_calc.result_3 = hdr.ff_calc.result_3 ^ hdr.ff_calc.g;
+
+		if (low_bit_f_4 != 0)
+			hdr.ff_calc.result_4 = hdr.ff_calc.result_4 ^ hdr.ff_calc.i;
+
+		if (low_bit_f_5 != 0)
+			hdr.ff_calc.result_5 = hdr.ff_calc.result_5 ^ hdr.ff_calc.k;
+
+		if (low_bit_f_6 != 0)
+			hdr.ff_calc.result_6 = hdr.ff_calc.result_6 ^ hdr.ff_calc.m;
+
+		if (low_bit_f_7 != 0)
+			hdr.ff_calc.result_7 = hdr.ff_calc.result_7 ^ hdr.ff_calc.o;
 
 
 
-        action_ff_mult();
+        table_forward.apply();
 
         // If high bit here
-		if (meta.high_bit_f_0 != 0)
-			meta.a = meta.a ^ IRRED_POLY;
+		if (high_bit_f_0 != 0)
+			hdr.ff_calc.a = hdr.ff_calc.a ^ IRRED_POLY;
 
-		if (meta.high_bit_f_1 != 0)
-			meta.c = meta.c ^ IRRED_POLY;
+		if (high_bit_f_1 != 0)
+			hdr.ff_calc.c = hdr.ff_calc.c ^ IRRED_POLY;
 
-		if (meta.high_bit_f_2 != 0)
-			meta.e = meta.e ^ IRRED_POLY;
+		if (high_bit_f_2 != 0)
+			hdr.ff_calc.e = hdr.ff_calc.e ^ IRRED_POLY;
 
-		if (meta.high_bit_f_3 != 0)
-			meta.g = meta.g ^ IRRED_POLY;
+		if (high_bit_f_3 != 0)
+			hdr.ff_calc.g = hdr.ff_calc.g ^ IRRED_POLY;
+
+		if (high_bit_f_4 != 0)
+			hdr.ff_calc.i = hdr.ff_calc.i ^ IRRED_POLY;
+
+		if (high_bit_f_5 != 0)
+			hdr.ff_calc.k = hdr.ff_calc.k ^ IRRED_POLY;
+
+		if (high_bit_f_6 != 0)
+			hdr.ff_calc.m = hdr.ff_calc.m ^ IRRED_POLY;
+
+		if (high_bit_f_7 != 0)
+			hdr.ff_calc.o = hdr.ff_calc.o ^ IRRED_POLY;
 
 
         
 
         // PASS 2
-        low_bit_f_0 = meta.b & 0x1;
-        low_bit_f_1 = meta.d & 0x1;
-        low_bit_f_2 = meta.f & 0x1;
-        low_bit_f_3 = meta.h & 0x1;
+        low_bit_f_0 = hdr.ff_calc.b & 0x1;
+        low_bit_f_1 = hdr.ff_calc.d & 0x1;
+        low_bit_f_2 = hdr.ff_calc.f & 0x1;
+        low_bit_f_3 = hdr.ff_calc.h & 0x1;
+        low_bit_f_4 = hdr.ff_calc.j & 0x1;
+        low_bit_f_5 = hdr.ff_calc.l & 0x1;
+        low_bit_f_6 = hdr.ff_calc.n & 0x1;
+        low_bit_f_7 = hdr.ff_calc.p & 0x1;
         
         // If low bit here
 		if (low_bit_f_0 != 0)
-			meta.result_0 = meta.result_0 ^ meta.a;
+			hdr.ff_calc.result_0 = hdr.ff_calc.result_0 ^ hdr.ff_calc.a;
 
 		if (low_bit_f_1 != 0)
-			meta.result_1 = meta.result_1 ^ meta.c;
+			hdr.ff_calc.result_1 = hdr.ff_calc.result_1 ^ hdr.ff_calc.c;
 
 		if (low_bit_f_2 != 0)
-			meta.result_2 = meta.result_2 ^ meta.e;
+			hdr.ff_calc.result_2 = hdr.ff_calc.result_2 ^ hdr.ff_calc.e;
 
 		if (low_bit_f_3 != 0)
-			meta.result_3 = meta.result_3 ^ meta.g;
+			hdr.ff_calc.result_3 = hdr.ff_calc.result_3 ^ hdr.ff_calc.g;
+
+		if (low_bit_f_4 != 0)
+			hdr.ff_calc.result_4 = hdr.ff_calc.result_4 ^ hdr.ff_calc.i;
+
+		if (low_bit_f_5 != 0)
+			hdr.ff_calc.result_5 = hdr.ff_calc.result_5 ^ hdr.ff_calc.k;
+
+		if (low_bit_f_6 != 0)
+			hdr.ff_calc.result_6 = hdr.ff_calc.result_6 ^ hdr.ff_calc.m;
+
+		if (low_bit_f_7 != 0)
+			hdr.ff_calc.result_7 = hdr.ff_calc.result_7 ^ hdr.ff_calc.o;
 
 
 
         action_ff_mult();
 
         // If high bit here
-		if (meta.high_bit_f_0 != 0)
-			meta.a = meta.a ^ IRRED_POLY;
+		if (high_bit_f_0 != 0)
+			hdr.ff_calc.a = hdr.ff_calc.a ^ IRRED_POLY;
 
-		if (meta.high_bit_f_1 != 0)
-			meta.c = meta.c ^ IRRED_POLY;
+		if (high_bit_f_1 != 0)
+			hdr.ff_calc.c = hdr.ff_calc.c ^ IRRED_POLY;
 
-		if (meta.high_bit_f_2 != 0)
-			meta.e = meta.e ^ IRRED_POLY;
+		if (high_bit_f_2 != 0)
+			hdr.ff_calc.e = hdr.ff_calc.e ^ IRRED_POLY;
 
-		if (meta.high_bit_f_3 != 0)
-			meta.g = meta.g ^ IRRED_POLY;
+		if (high_bit_f_3 != 0)
+			hdr.ff_calc.g = hdr.ff_calc.g ^ IRRED_POLY;
+
+		if (high_bit_f_4 != 0)
+			hdr.ff_calc.i = hdr.ff_calc.i ^ IRRED_POLY;
+
+		if (high_bit_f_5 != 0)
+			hdr.ff_calc.k = hdr.ff_calc.k ^ IRRED_POLY;
+
+		if (high_bit_f_6 != 0)
+			hdr.ff_calc.m = hdr.ff_calc.m ^ IRRED_POLY;
+
+		if (high_bit_f_7 != 0)
+			hdr.ff_calc.o = hdr.ff_calc.o ^ IRRED_POLY;
 
         
 
         // PASS 3
-        low_bit_f_0 = meta.b & 0x1;
-        low_bit_f_1 = meta.d & 0x1;
-        low_bit_f_2 = meta.f & 0x1;
-        low_bit_f_3 = meta.h & 0x1;
+        low_bit_f_0 = hdr.ff_calc.b & 0x1;
+        low_bit_f_1 = hdr.ff_calc.d & 0x1;
+        low_bit_f_2 = hdr.ff_calc.f & 0x1;
+        low_bit_f_3 = hdr.ff_calc.h & 0x1;
+        low_bit_f_4 = hdr.ff_calc.j & 0x1;
+        low_bit_f_5 = hdr.ff_calc.l & 0x1;
+        low_bit_f_6 = hdr.ff_calc.n & 0x1;
+        low_bit_f_7 = hdr.ff_calc.p & 0x1;
 
         // If low bit here
 		if (low_bit_f_0 != 0)
-			meta.result_0 = meta.result_0 ^ meta.a;
+			hdr.ff_calc.result_0 = hdr.ff_calc.result_0 ^ hdr.ff_calc.a;
 
 		if (low_bit_f_1 != 0)
-			meta.result_1 = meta.result_1 ^ meta.c;
+			hdr.ff_calc.result_1 = hdr.ff_calc.result_1 ^ hdr.ff_calc.c;
 
 		if (low_bit_f_2 != 0)
-			meta.result_2 = meta.result_2 ^ meta.e;
+			hdr.ff_calc.result_2 = hdr.ff_calc.result_2 ^ hdr.ff_calc.e;
 
 		if (low_bit_f_3 != 0)
-			meta.result_3 = meta.result_3 ^ meta.g;
+			hdr.ff_calc.result_3 = hdr.ff_calc.result_3 ^ hdr.ff_calc.g;
+
+		if (low_bit_f_4 != 0)
+			hdr.ff_calc.result_4 = hdr.ff_calc.result_4 ^ hdr.ff_calc.i;
+
+		if (low_bit_f_5 != 0)
+			hdr.ff_calc.result_5 = hdr.ff_calc.result_5 ^ hdr.ff_calc.k;
+
+		if (low_bit_f_6 != 0)
+			hdr.ff_calc.result_6 = hdr.ff_calc.result_6 ^ hdr.ff_calc.m;
+
+		if (low_bit_f_7 != 0)
+			hdr.ff_calc.result_7 = hdr.ff_calc.result_7 ^ hdr.ff_calc.o;
 
 
 
         action_ff_mult();
 
         // If high bit here
-		if (meta.high_bit_f_0 != 0)
-			meta.a = meta.a ^ IRRED_POLY;
+		if (high_bit_f_0 != 0)
+			hdr.ff_calc.a = hdr.ff_calc.a ^ IRRED_POLY;
 
-		if (meta.high_bit_f_1 != 0)
-			meta.c = meta.c ^ IRRED_POLY;
+		if (high_bit_f_1 != 0)
+			hdr.ff_calc.c = hdr.ff_calc.c ^ IRRED_POLY;
 
-		if (meta.high_bit_f_2 != 0)
-			meta.e = meta.e ^ IRRED_POLY;
+		if (high_bit_f_2 != 0)
+			hdr.ff_calc.e = hdr.ff_calc.e ^ IRRED_POLY;
 
-		if (meta.high_bit_f_3 != 0)
-			meta.g = meta.g ^ IRRED_POLY;
+		if (high_bit_f_3 != 0)
+			hdr.ff_calc.g = hdr.ff_calc.g ^ IRRED_POLY;
+
+		if (high_bit_f_4 != 0)
+			hdr.ff_calc.i = hdr.ff_calc.i ^ IRRED_POLY;
+
+		if (high_bit_f_5 != 0)
+			hdr.ff_calc.k = hdr.ff_calc.k ^ IRRED_POLY;
+
+		if (high_bit_f_6 != 0)
+			hdr.ff_calc.m = hdr.ff_calc.m ^ IRRED_POLY;
+
+		if (high_bit_f_7 != 0)
+			hdr.ff_calc.o = hdr.ff_calc.o ^ IRRED_POLY;
 
 
         // PASS 4
-        low_bit_f_0 = meta.b & 0x1;
-        low_bit_f_1 = meta.d & 0x1;
-        low_bit_f_2 = meta.f & 0x1;
-        low_bit_f_3 = meta.h & 0x1;
+        low_bit_f_0 = hdr.ff_calc.b & 0x1;
+        low_bit_f_1 = hdr.ff_calc.d & 0x1;
+        low_bit_f_2 = hdr.ff_calc.f & 0x1;
+        low_bit_f_3 = hdr.ff_calc.h & 0x1;
+        low_bit_f_4 = hdr.ff_calc.j & 0x1;
+        low_bit_f_5 = hdr.ff_calc.l & 0x1;
+        low_bit_f_6 = hdr.ff_calc.n & 0x1;
+        low_bit_f_7 = hdr.ff_calc.p & 0x1;
         
         // If low bit here
 		if (low_bit_f_0 != 0)
-			meta.result_0 = meta.result_0 ^ meta.a;
+			hdr.ff_calc.result_0 = hdr.ff_calc.result_0 ^ hdr.ff_calc.a;
 
 		if (low_bit_f_1 != 0)
-			meta.result_1 = meta.result_1 ^ meta.c;
+			hdr.ff_calc.result_1 = hdr.ff_calc.result_1 ^ hdr.ff_calc.c;
 
 		if (low_bit_f_2 != 0)
-			meta.result_2 = meta.result_2 ^ meta.e;
+			hdr.ff_calc.result_2 = hdr.ff_calc.result_2 ^ hdr.ff_calc.e;
 
 		if (low_bit_f_3 != 0)
-			meta.result_3 = meta.result_3 ^ meta.g;
+			hdr.ff_calc.result_3 = hdr.ff_calc.result_3 ^ hdr.ff_calc.g;
+
+		if (low_bit_f_4 != 0)
+			hdr.ff_calc.result_4 = hdr.ff_calc.result_4 ^ hdr.ff_calc.i;
+
+		if (low_bit_f_5 != 0)
+			hdr.ff_calc.result_5 = hdr.ff_calc.result_5 ^ hdr.ff_calc.k;
+
+		if (low_bit_f_6 != 0)
+			hdr.ff_calc.result_6 = hdr.ff_calc.result_6 ^ hdr.ff_calc.m;
+
+		if (low_bit_f_7 != 0)
+			hdr.ff_calc.result_7 = hdr.ff_calc.result_7 ^ hdr.ff_calc.o;
 
 
 
         action_ff_mult();
 
         // If high bit here
-		if (meta.high_bit_f_0 != 0)
-			meta.a = meta.a ^ IRRED_POLY;
+		if (high_bit_f_0 != 0)
+			hdr.ff_calc.a = hdr.ff_calc.a ^ IRRED_POLY;
 
-		if (meta.high_bit_f_1 != 0)
-			meta.c = meta.c ^ IRRED_POLY;
+		if (high_bit_f_1 != 0)
+			hdr.ff_calc.c = hdr.ff_calc.c ^ IRRED_POLY;
 
-		if (meta.high_bit_f_2 != 0)
-			meta.e = meta.e ^ IRRED_POLY;
+		if (high_bit_f_2 != 0)
+			hdr.ff_calc.e = hdr.ff_calc.e ^ IRRED_POLY;
 
-		if (meta.high_bit_f_3 != 0)
-			meta.g = meta.g ^ IRRED_POLY;
+		if (high_bit_f_3 != 0)
+			hdr.ff_calc.g = hdr.ff_calc.g ^ IRRED_POLY;
+
+		if (high_bit_f_4 != 0)
+			hdr.ff_calc.i = hdr.ff_calc.i ^ IRRED_POLY;
+
+		if (high_bit_f_5 != 0)
+			hdr.ff_calc.k = hdr.ff_calc.k ^ IRRED_POLY;
+
+		if (high_bit_f_6 != 0)
+			hdr.ff_calc.m = hdr.ff_calc.m ^ IRRED_POLY;
+
+		if (high_bit_f_7 != 0)
+			hdr.ff_calc.o = hdr.ff_calc.o ^ IRRED_POLY;
 
 
-        // Write to packet header
-
-        hdr.ff_calc.a = meta.a;
-        hdr.ff_calc.b = meta.b;
-        hdr.ff_calc.c = meta.c;
-        hdr.ff_calc.d = meta.d;
-        hdr.ff_calc.e = meta.e;
-        hdr.ff_calc.f = meta.f;
-        hdr.ff_calc.g = meta.g;
-        hdr.ff_calc.h = meta.h;
-        
-        hdr.ff_calc.result_0 = meta.result_0;
-        hdr.ff_calc.result_1 = meta.result_1;
-        hdr.ff_calc.result_2 = meta.result_2;
-        hdr.ff_calc.result_3 = meta.result_3;
         
     }
 }
@@ -404,22 +517,6 @@ struct my_egress_headers_t {
     /********  G L O B A L   E G R E S S   M E T A D A T A  *********/
 
 struct my_egress_metadata_t {
-    bit<8> a;
-    bit<8> b;
-    bit<8> c;
-    bit<8> d;
-    bit<8> e;
-    bit<8> f;
-    bit<8> g;
-    bit<8> h;
-    bit<8> result_0;
-    bit<8> result_1;
-    bit<8> result_2;
-    bit<8> result_3;
-    bit<8> high_bit_f_0;
-    bit<8> high_bit_f_1;
-    bit<8> high_bit_f_2;
-    bit<8> high_bit_f_3;
 }
 
     /***********************  P A R S E R  **************************/
@@ -447,24 +544,6 @@ parser EgressParser(packet_in        pkt,
 
     state parse_ff_calc {
         pkt.extract(hdr.ff_calc);
-        
-        meta.a = hdr.ff_calc.a;
-        meta.b = hdr.ff_calc.b;
-        meta.c = hdr.ff_calc.c;
-        meta.d = hdr.ff_calc.d;
-        meta.e = hdr.ff_calc.e;
-        meta.f = hdr.ff_calc.f;
-        meta.g = hdr.ff_calc.g;
-        meta.h = hdr.ff_calc.h;
-        meta.result_0 = hdr.ff_calc.result_0;
-        meta.result_1 = hdr.ff_calc.result_1;
-        meta.result_2 = hdr.ff_calc.result_2;
-        meta.result_3 = hdr.ff_calc.result_3;
-        meta.high_bit_f_0 = 0;
-        meta.high_bit_f_1 = 0;
-        meta.high_bit_f_2 = 0;
-        meta.high_bit_f_3 = 0;
-
         transition parse_port;
     }
 
@@ -487,212 +566,358 @@ control Egress(
     inout egress_intrinsic_metadata_for_output_port_t  eg_oport_md)
 {
 
+    bit<8> high_bit_f_0;
+    bit<8> high_bit_f_1;
+    bit<8> high_bit_f_2;
+    bit<8> high_bit_f_3;
+    bit<8> high_bit_f_4;
+    bit<8> high_bit_f_5;
+    bit<8> high_bit_f_6;
+    bit<8> high_bit_f_7;
+
+    bit<8> low_bit_f_0;
+    bit<8> low_bit_f_1;
+    bit<8> low_bit_f_2;
+    bit<8> low_bit_f_3;
+    bit<8> low_bit_f_4;
+    bit<8> low_bit_f_5;
+    bit<8> low_bit_f_6;
+    bit<8> low_bit_f_7;
+
     action action_ff_mult() {
         
         // ELEMENT 0
-		meta.high_bit_f_0 = meta.a & HIGH_BIT_MASK;
+		high_bit_f_0 = hdr.ff_calc.a & HIGH_BIT_MASK;
 
-		meta.a = meta.a << 1;
-		meta.b = meta.b >> 1;
+		hdr.ff_calc.a = hdr.ff_calc.a << 1;
+		hdr.ff_calc.b = hdr.ff_calc.b >> 1;
 
         // ELEMENT 1
-		meta.high_bit_f_1 = meta.c & HIGH_BIT_MASK;
+		high_bit_f_1 = hdr.ff_calc.c & HIGH_BIT_MASK;
 
-		meta.c = meta.c << 1;
-		meta.d = meta.d >> 1;
+		hdr.ff_calc.c = hdr.ff_calc.c << 1;
+		hdr.ff_calc.d = hdr.ff_calc.d >> 1;
 
         // ELEMENT 2
-		meta.high_bit_f_2 = meta.e & HIGH_BIT_MASK;
+		high_bit_f_2 = hdr.ff_calc.e & HIGH_BIT_MASK;
 
-		meta.e = meta.e << 1;
-		meta.f = meta.f >> 1;
+		hdr.ff_calc.e = hdr.ff_calc.e << 1;
+		hdr.ff_calc.f = hdr.ff_calc.f >> 1;
 
         // ELEMENT 3
-		meta.high_bit_f_3 = meta.g & HIGH_BIT_MASK;
+		high_bit_f_3 = hdr.ff_calc.g & HIGH_BIT_MASK;
 
-		meta.g = meta.g << 1;
-		meta.h = meta.h >> 1;
+		hdr.ff_calc.g = hdr.ff_calc.g << 1;
+		hdr.ff_calc.h = hdr.ff_calc.h >> 1;
+
+        // ELEMENT 4
+		high_bit_f_4 = hdr.ff_calc.i & HIGH_BIT_MASK;
+
+		hdr.ff_calc.i = hdr.ff_calc.i << 1;
+		hdr.ff_calc.j = hdr.ff_calc.j >> 1;
+
+        // ELEMENT 5
+		high_bit_f_5 = hdr.ff_calc.k & HIGH_BIT_MASK;
+
+		hdr.ff_calc.k = hdr.ff_calc.k << 1;
+		hdr.ff_calc.l = hdr.ff_calc.l >> 1;
+
+        // ELEMENT 6
+		high_bit_f_6 = hdr.ff_calc.m & HIGH_BIT_MASK;
+
+		hdr.ff_calc.m = hdr.ff_calc.m << 1;
+		hdr.ff_calc.n = hdr.ff_calc.n >> 1;
+
+        // ELEMENT 7
+		high_bit_f_7 = hdr.ff_calc.o & HIGH_BIT_MASK;
+
+		hdr.ff_calc.o = hdr.ff_calc.o << 1;
+		hdr.ff_calc.p = hdr.ff_calc.p >> 1;
 
 
 
 
     }
 
+    action set_ethertype() {
+        hdr.ethernet.ether_type = TYPE_RESPONSE;
+    }
+
+    action action_ff_mult_end() {
+        action_ff_mult();
+        set_ethertype();
+    }
+
     apply {
         
-        bit<8> low_bit_f_0;
-        bit<8> low_bit_f_1;
-        bit<8> low_bit_f_2;
-        bit<8> low_bit_f_3;
+        
 
 
         // PASS 5
-        low_bit_f_0 = meta.b & 0x1;
-        low_bit_f_1 = meta.d & 0x1;
-        low_bit_f_2 = meta.f & 0x1;
-        low_bit_f_3 = meta.h & 0x1;
+        low_bit_f_0 = hdr.ff_calc.b & 0x1;
+        low_bit_f_1 = hdr.ff_calc.d & 0x1;
+        low_bit_f_2 = hdr.ff_calc.f & 0x1;
+        low_bit_f_3 = hdr.ff_calc.h & 0x1;
+        low_bit_f_4 = hdr.ff_calc.j & 0x1;
+        low_bit_f_5 = hdr.ff_calc.l & 0x1;
+        low_bit_f_6 = hdr.ff_calc.n & 0x1;
+        low_bit_f_7 = hdr.ff_calc.p & 0x1;
         
         // If low bit here
 		if (low_bit_f_0 != 0)
-			meta.result_0 = meta.result_0 ^ meta.a;
+			hdr.ff_calc.result_0 = hdr.ff_calc.result_0 ^ hdr.ff_calc.a;
 
 		if (low_bit_f_1 != 0)
-			meta.result_1 = meta.result_1 ^ meta.c;
+			hdr.ff_calc.result_1 = hdr.ff_calc.result_1 ^ hdr.ff_calc.c;
 
 		if (low_bit_f_2 != 0)
-			meta.result_2 = meta.result_2 ^ meta.e;
+			hdr.ff_calc.result_2 = hdr.ff_calc.result_2 ^ hdr.ff_calc.e;
 
 		if (low_bit_f_3 != 0)
-			meta.result_3 = meta.result_3 ^ meta.g;
+			hdr.ff_calc.result_3 = hdr.ff_calc.result_3 ^ hdr.ff_calc.g;
+
+		if (low_bit_f_4 != 0)
+			hdr.ff_calc.result_4 = hdr.ff_calc.result_4 ^ hdr.ff_calc.i;
+
+		if (low_bit_f_5 != 0)
+			hdr.ff_calc.result_5 = hdr.ff_calc.result_5 ^ hdr.ff_calc.k;
+
+		if (low_bit_f_6 != 0)
+			hdr.ff_calc.result_6 = hdr.ff_calc.result_6 ^ hdr.ff_calc.m;
+
+		if (low_bit_f_7 != 0)
+			hdr.ff_calc.result_7 = hdr.ff_calc.result_7 ^ hdr.ff_calc.o;
 
 
 
         action_ff_mult();
 
         // If high bit here
-		if (meta.high_bit_f_0 != 0)
-			meta.a = meta.a ^ IRRED_POLY;
+		if (high_bit_f_0 != 0)
+			hdr.ff_calc.a = hdr.ff_calc.a ^ IRRED_POLY;
 
-		if (meta.high_bit_f_1 != 0)
-			meta.c = meta.c ^ IRRED_POLY;
+		if (high_bit_f_1 != 0)
+			hdr.ff_calc.c = hdr.ff_calc.c ^ IRRED_POLY;
 
-		if (meta.high_bit_f_2 != 0)
-			meta.e = meta.e ^ IRRED_POLY;
+		if (high_bit_f_2 != 0)
+			hdr.ff_calc.e = hdr.ff_calc.e ^ IRRED_POLY;
 
-		if (meta.high_bit_f_3 != 0)
-			meta.g = meta.g ^ IRRED_POLY;
+		if (high_bit_f_3 != 0)
+			hdr.ff_calc.g = hdr.ff_calc.g ^ IRRED_POLY;
+
+		if (high_bit_f_4 != 0)
+			hdr.ff_calc.i = hdr.ff_calc.i ^ IRRED_POLY;
+
+		if (high_bit_f_5 != 0)
+			hdr.ff_calc.k = hdr.ff_calc.k ^ IRRED_POLY;
+
+		if (high_bit_f_6 != 0)
+			hdr.ff_calc.m = hdr.ff_calc.m ^ IRRED_POLY;
+
+		if (high_bit_f_7 != 0)
+			hdr.ff_calc.o = hdr.ff_calc.o ^ IRRED_POLY;
 
         
 
         // PASS 6
-        low_bit_f_0 = meta.b & 0x1;
-        low_bit_f_1 = meta.d & 0x1;
-        low_bit_f_2 = meta.f & 0x1;
-        low_bit_f_3 = meta.h & 0x1;
+        low_bit_f_0 = hdr.ff_calc.b & 0x1;
+        low_bit_f_1 = hdr.ff_calc.d & 0x1;
+        low_bit_f_2 = hdr.ff_calc.f & 0x1;
+        low_bit_f_3 = hdr.ff_calc.h & 0x1;
+        low_bit_f_4 = hdr.ff_calc.j & 0x1;
+        low_bit_f_5 = hdr.ff_calc.l & 0x1;
+        low_bit_f_6 = hdr.ff_calc.n & 0x1;
+        low_bit_f_7 = hdr.ff_calc.p & 0x1;
         
         // If low bit here
 		if (low_bit_f_0 != 0)
-			meta.result_0 = meta.result_0 ^ meta.a;
+			hdr.ff_calc.result_0 = hdr.ff_calc.result_0 ^ hdr.ff_calc.a;
 
 		if (low_bit_f_1 != 0)
-			meta.result_1 = meta.result_1 ^ meta.c;
+			hdr.ff_calc.result_1 = hdr.ff_calc.result_1 ^ hdr.ff_calc.c;
 
 		if (low_bit_f_2 != 0)
-			meta.result_2 = meta.result_2 ^ meta.e;
+			hdr.ff_calc.result_2 = hdr.ff_calc.result_2 ^ hdr.ff_calc.e;
 
 		if (low_bit_f_3 != 0)
-			meta.result_3 = meta.result_3 ^ meta.g;
+			hdr.ff_calc.result_3 = hdr.ff_calc.result_3 ^ hdr.ff_calc.g;
+
+		if (low_bit_f_4 != 0)
+			hdr.ff_calc.result_4 = hdr.ff_calc.result_4 ^ hdr.ff_calc.i;
+
+		if (low_bit_f_5 != 0)
+			hdr.ff_calc.result_5 = hdr.ff_calc.result_5 ^ hdr.ff_calc.k;
+
+		if (low_bit_f_6 != 0)
+			hdr.ff_calc.result_6 = hdr.ff_calc.result_6 ^ hdr.ff_calc.m;
+
+		if (low_bit_f_7 != 0)
+			hdr.ff_calc.result_7 = hdr.ff_calc.result_7 ^ hdr.ff_calc.o;
 
 
 
         action_ff_mult();
 
         // If high bit here
-		if (meta.high_bit_f_0 != 0)
-			meta.a = meta.a ^ IRRED_POLY;
+		if (high_bit_f_0 != 0)
+			hdr.ff_calc.a = hdr.ff_calc.a ^ IRRED_POLY;
 
-		if (meta.high_bit_f_1 != 0)
-			meta.c = meta.c ^ IRRED_POLY;
+		if (high_bit_f_1 != 0)
+			hdr.ff_calc.c = hdr.ff_calc.c ^ IRRED_POLY;
 
-		if (meta.high_bit_f_2 != 0)
-			meta.e = meta.e ^ IRRED_POLY;
+		if (high_bit_f_2 != 0)
+			hdr.ff_calc.e = hdr.ff_calc.e ^ IRRED_POLY;
 
-		if (meta.high_bit_f_3 != 0)
-			meta.g = meta.g ^ IRRED_POLY;
+		if (high_bit_f_3 != 0)
+			hdr.ff_calc.g = hdr.ff_calc.g ^ IRRED_POLY;
+
+		if (high_bit_f_4 != 0)
+			hdr.ff_calc.i = hdr.ff_calc.i ^ IRRED_POLY;
+
+		if (high_bit_f_5 != 0)
+			hdr.ff_calc.k = hdr.ff_calc.k ^ IRRED_POLY;
+
+		if (high_bit_f_6 != 0)
+			hdr.ff_calc.m = hdr.ff_calc.m ^ IRRED_POLY;
+
+		if (high_bit_f_7 != 0)
+			hdr.ff_calc.o = hdr.ff_calc.o ^ IRRED_POLY;
 
     
 
 
         // PASS 7
-        low_bit_f_0 = meta.b & 0x1;
-        low_bit_f_1 = meta.d & 0x1;
-        low_bit_f_2 = meta.f & 0x1;
-        low_bit_f_3 = meta.h & 0x1;
+        low_bit_f_0 = hdr.ff_calc.b & 0x1;
+        low_bit_f_1 = hdr.ff_calc.d & 0x1;
+        low_bit_f_2 = hdr.ff_calc.f & 0x1;
+        low_bit_f_3 = hdr.ff_calc.h & 0x1;
+        low_bit_f_4 = hdr.ff_calc.j & 0x1;
+        low_bit_f_5 = hdr.ff_calc.l & 0x1;
+        low_bit_f_6 = hdr.ff_calc.n & 0x1;
+        low_bit_f_7 = hdr.ff_calc.p & 0x1;
         
         // If low bit here
 		if (low_bit_f_0 != 0)
-			meta.result_0 = meta.result_0 ^ meta.a;
+			hdr.ff_calc.result_0 = hdr.ff_calc.result_0 ^ hdr.ff_calc.a;
 
 		if (low_bit_f_1 != 0)
-			meta.result_1 = meta.result_1 ^ meta.c;
+			hdr.ff_calc.result_1 = hdr.ff_calc.result_1 ^ hdr.ff_calc.c;
 
 		if (low_bit_f_2 != 0)
-			meta.result_2 = meta.result_2 ^ meta.e;
+			hdr.ff_calc.result_2 = hdr.ff_calc.result_2 ^ hdr.ff_calc.e;
 
 		if (low_bit_f_3 != 0)
-			meta.result_3 = meta.result_3 ^ meta.g;
+			hdr.ff_calc.result_3 = hdr.ff_calc.result_3 ^ hdr.ff_calc.g;
+
+		if (low_bit_f_4 != 0)
+			hdr.ff_calc.result_4 = hdr.ff_calc.result_4 ^ hdr.ff_calc.i;
+
+		if (low_bit_f_5 != 0)
+			hdr.ff_calc.result_5 = hdr.ff_calc.result_5 ^ hdr.ff_calc.k;
+
+		if (low_bit_f_6 != 0)
+			hdr.ff_calc.result_6 = hdr.ff_calc.result_6 ^ hdr.ff_calc.m;
+
+		if (low_bit_f_7 != 0)
+			hdr.ff_calc.result_7 = hdr.ff_calc.result_7 ^ hdr.ff_calc.o;
 
 
 
         action_ff_mult();
 
         // If high bit here
-		if (meta.high_bit_f_0 != 0)
-			meta.a = meta.a ^ IRRED_POLY;
+		if (high_bit_f_0 != 0)
+			hdr.ff_calc.a = hdr.ff_calc.a ^ IRRED_POLY;
 
-		if (meta.high_bit_f_1 != 0)
-			meta.c = meta.c ^ IRRED_POLY;
+		if (high_bit_f_1 != 0)
+			hdr.ff_calc.c = hdr.ff_calc.c ^ IRRED_POLY;
 
-		if (meta.high_bit_f_2 != 0)
-			meta.e = meta.e ^ IRRED_POLY;
+		if (high_bit_f_2 != 0)
+			hdr.ff_calc.e = hdr.ff_calc.e ^ IRRED_POLY;
 
-		if (meta.high_bit_f_3 != 0)
-			meta.g = meta.g ^ IRRED_POLY;
+		if (high_bit_f_3 != 0)
+			hdr.ff_calc.g = hdr.ff_calc.g ^ IRRED_POLY;
+
+		if (high_bit_f_4 != 0)
+			hdr.ff_calc.i = hdr.ff_calc.i ^ IRRED_POLY;
+
+		if (high_bit_f_5 != 0)
+			hdr.ff_calc.k = hdr.ff_calc.k ^ IRRED_POLY;
+
+		if (high_bit_f_6 != 0)
+			hdr.ff_calc.m = hdr.ff_calc.m ^ IRRED_POLY;
+
+		if (high_bit_f_7 != 0)
+			hdr.ff_calc.o = hdr.ff_calc.o ^ IRRED_POLY;
 
         
 
         // PASS 8
-        low_bit_f_0 = meta.b & 0x1;
-        low_bit_f_1 = meta.d & 0x1;
-        low_bit_f_2 = meta.f & 0x1;
-        low_bit_f_3 = meta.h & 0x1;
+        low_bit_f_0 = hdr.ff_calc.b & 0x1;
+        low_bit_f_1 = hdr.ff_calc.d & 0x1;
+        low_bit_f_2 = hdr.ff_calc.f & 0x1;
+        low_bit_f_3 = hdr.ff_calc.h & 0x1;
+        low_bit_f_4 = hdr.ff_calc.j & 0x1;
+        low_bit_f_5 = hdr.ff_calc.l & 0x1;
+        low_bit_f_6 = hdr.ff_calc.n & 0x1;
+        low_bit_f_7 = hdr.ff_calc.p & 0x1;
         
         // If low bit here
 		if (low_bit_f_0 != 0)
-			meta.result_0 = meta.result_0 ^ meta.a;
+			hdr.ff_calc.result_0 = hdr.ff_calc.result_0 ^ hdr.ff_calc.a;
 
 		if (low_bit_f_1 != 0)
-			meta.result_1 = meta.result_1 ^ meta.c;
+			hdr.ff_calc.result_1 = hdr.ff_calc.result_1 ^ hdr.ff_calc.c;
 
 		if (low_bit_f_2 != 0)
-			meta.result_2 = meta.result_2 ^ meta.e;
+			hdr.ff_calc.result_2 = hdr.ff_calc.result_2 ^ hdr.ff_calc.e;
 
 		if (low_bit_f_3 != 0)
-			meta.result_3 = meta.result_3 ^ meta.g;
+			hdr.ff_calc.result_3 = hdr.ff_calc.result_3 ^ hdr.ff_calc.g;
+
+		if (low_bit_f_4 != 0)
+			hdr.ff_calc.result_4 = hdr.ff_calc.result_4 ^ hdr.ff_calc.i;
+
+		if (low_bit_f_5 != 0)
+			hdr.ff_calc.result_5 = hdr.ff_calc.result_5 ^ hdr.ff_calc.k;
+
+		if (low_bit_f_6 != 0)
+			hdr.ff_calc.result_6 = hdr.ff_calc.result_6 ^ hdr.ff_calc.m;
+
+		if (low_bit_f_7 != 0)
+			hdr.ff_calc.result_7 = hdr.ff_calc.result_7 ^ hdr.ff_calc.o;
 
 
 
-        action_ff_mult();
+        action_ff_mult_end();
 
         // If high bit here
-		if (meta.high_bit_f_0 != 0)
-			meta.a = meta.a ^ IRRED_POLY;
+		if (high_bit_f_0 != 0)
+			hdr.ff_calc.a = hdr.ff_calc.a ^ IRRED_POLY;
 
-		if (meta.high_bit_f_1 != 0)
-			meta.c = meta.c ^ IRRED_POLY;
+		if (high_bit_f_1 != 0)
+			hdr.ff_calc.c = hdr.ff_calc.c ^ IRRED_POLY;
 
-		if (meta.high_bit_f_2 != 0)
-			meta.e = meta.e ^ IRRED_POLY;
+		if (high_bit_f_2 != 0)
+			hdr.ff_calc.e = hdr.ff_calc.e ^ IRRED_POLY;
 
-		if (meta.high_bit_f_3 != 0)
-			meta.g = meta.g ^ IRRED_POLY;
+		if (high_bit_f_3 != 0)
+			hdr.ff_calc.g = hdr.ff_calc.g ^ IRRED_POLY;
+
+		if (high_bit_f_4 != 0)
+			hdr.ff_calc.i = hdr.ff_calc.i ^ IRRED_POLY;
+
+		if (high_bit_f_5 != 0)
+			hdr.ff_calc.k = hdr.ff_calc.k ^ IRRED_POLY;
+
+		if (high_bit_f_6 != 0)
+			hdr.ff_calc.m = hdr.ff_calc.m ^ IRRED_POLY;
+
+		if (high_bit_f_7 != 0)
+			hdr.ff_calc.o = hdr.ff_calc.o ^ IRRED_POLY;
 
         
-
-
-        hdr.ethernet.ether_type = TYPE_RESPONSE;
-        hdr.ff_calc.a = meta.a;
-        hdr.ff_calc.b = meta.b;
-        hdr.ff_calc.c = meta.c;
-        hdr.ff_calc.d = meta.d;
-        hdr.ff_calc.e = meta.e;
-        hdr.ff_calc.f = meta.f;
-        hdr.ff_calc.g = meta.g;
-        hdr.ff_calc.h = meta.h;
-        hdr.ff_calc.result_0 = meta.result_0;
-        hdr.ff_calc.result_1 = meta.result_1;
-        hdr.ff_calc.result_2 = meta.result_2;
-        hdr.ff_calc.result_3 = meta.result_3;
+        
     }
 }
 
