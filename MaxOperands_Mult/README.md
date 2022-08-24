@@ -12,10 +12,8 @@ Preliminary results show that we cannot do more than 15 parallel multiplications
 
 ## RPA Multiplication
 
-TODO: Create new template and change the README to reflect the 8 maximum multiplications
+In order to generate the `.p4` program, navigate to the `rpa_mult/bfrt_python` folder and execute the `.py` script just like previously mentioned, providing the number of wanted multiplications.
 
-In order to generate the `.p4` program, navigate to the `rpa_mult/bfrt_python` folder and execute the `.py` script just like previously mentioned, providing the number of wanted multiplications
+Preliminary results also show that we cannot do more than 8 parallel multiplications due to the resource limitations of the switch.
 
-Preliminary results also show that we cannot do more than 8 parallel multiplications due to the resource limitations of the switch
-
-**Note:** We leave an older version that uses `@pragmas` and that was able to compile a `.p4` program capable of doing 5 parallel multiplications. However, there does not seem to be a concrete logic to allocate be able to allocate even more. We leave the version in [rpa_mult/p4src/rpa_mult_5_ops_pragmas.p4](./rpa_mult/p4src/rpa_mult_5_ops_pragmas.p4).
+**Note:** We leave an older version that used `@pragmas` and that was able to compile a `.p4` program capable of doing 5 parallel multiplications. This version was based on an older template that used a lot more metadata than needed and was just able to to 4 parallel multiplications However, there does not seem to be a concrete logic to allocate be able to allocate even more. We leave the version just as an archive in [rpa_mult/p4src/rpa_mult_5_ops_pragmas.p4](./rpa_mult/p4src/rpa_mult_5_ops_pragmas.p4).
