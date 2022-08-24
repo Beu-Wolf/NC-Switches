@@ -57,9 +57,6 @@ struct my_ingress_headers_t {
     /******  G L O B A L   I N G R E S S   M E T A D A T A  *********/
 
 struct my_ingress_metadata_t {
-    bit<8> X;
-    bit<8> result_X;
-    bit<8> high_bit_f_X; 
 }
 
     /***********************  P A R S E R  **************************/
@@ -87,11 +84,6 @@ parser IngressParser(packet_in        pkt,
 
     state parse_ff_calc {
         pkt.extract(hdr.ff_calc);
-        
-        meta.X = hdr.ff_calc.X;
-        meta.result_X = 0;
-        meta.high_bit_f_X = 0;
-        
         transition parse_port;
     }
 
@@ -113,6 +105,11 @@ control Ingress(
     inout ingress_intrinsic_metadata_for_deparser_t  ig_dprsr_md,
     inout ingress_intrinsic_metadata_for_tm_t        ig_tm_md)
 {
+
+    bit<8> high_bit_f_X;
+
+    bit<8> low_bit_f_X;
+
     action action_ff_mult() {
         
         // ELEMENT X
@@ -123,6 +120,7 @@ control Ingress(
 
     action action_forward(PortId_t port) {
         ig_tm_md.ucast_egress_port = port;
+        action_ff_mult();
     }
 
     table table_forward {
@@ -130,32 +128,28 @@ control Ingress(
             hdr.port.port_num: exact;
         }
         actions = {
-            action_forward;
+            action_forward; action_ff_mult();
         }
         size = 65536;
+        default_action = action_ff_mult();
     }
 
     
 
     apply {
-        bit<8> low_bit_f_X;
-
-        table_forward.apply();
 
         // PASS 1
-        low_bit_f_X = meta.Y & 0x1;
+        low_bit_f_X = hdr.ff_calc.Y & 0x1;
         
         // If low bit here
 
 
-        action_ff_mult();
+        table_forward.apply();
 
         // If high bit here
 
-        
-
         // PASS 2
-        low_bit_f_X = meta.Y & 0x1;
+        low_bit_f_X = hdr.ff_calc.Y & 0x1;
         
         // If low bit here
 
@@ -166,8 +160,8 @@ control Ingress(
         
 
         // PASS 3
-        low_bit_f_X = meta.Y & 0x1;
-
+        low_bit_f_X = hdr.ff_calc.Y & 0x1;
+        
         // If low bit here
 
 
@@ -176,7 +170,7 @@ control Ingress(
         // If high bit here
 
         // PASS 4
-        low_bit_f_X = meta.Y & 0x1;
+        low_bit_f_X = hdr.ff_calc.Y & 0x1;
         
         // If low bit here
 
@@ -185,12 +179,6 @@ control Ingress(
 
         // If high bit here
 
-        // Write to packet header
-
-        hdr.ff_calc.X = meta.X;
-        
-        hdr.ff_calc.result_X = meta.result_X;
-        
     }
 }
 
@@ -224,9 +212,6 @@ struct my_egress_headers_t {
     /********  G L O B A L   E G R E S S   M E T A D A T A  *********/
 
 struct my_egress_metadata_t {
-    bit<8> X;
-    bit<8> result_X;
-    bit<8> high_bit_f_X;
 }
 
     /***********************  P A R S E R  **************************/
@@ -254,11 +239,6 @@ parser EgressParser(packet_in        pkt,
 
     state parse_ff_calc {
         pkt.extract(hdr.ff_calc);
-        
-        meta.X = hdr.ff_calc.X;
-        meta.result_X = hdr.ff_calc.result_X;
-        meta.high_bit_f_X = 0;
-
         transition parse_port;
     }
 
@@ -281,21 +261,32 @@ control Egress(
     inout egress_intrinsic_metadata_for_output_port_t  eg_oport_md)
 {
 
+    bit<8> high_bit_f_X;
+
+    bit<8> low_bit_f_X;
+
     action action_ff_mult() {
         
         // ELEMENT X
 
 
+    }
 
+    action set_ethertype() {
+        hdr.ethernet.ether_type = TYPE_RESPONSE;
+    }
+
+    action action_ff_mult_end() {
+        action_ff_mult();
+        set_ethertype();
     }
 
     apply {
         
-        bit<8> low_bit_f_X;
 
 
         // PASS 5
-        low_bit_f_X = meta.Y & 0x1;
+        low_bit_f_X = hdr.ff_calc.Y & 0x1;
         
         // If low bit here
 
@@ -306,7 +297,7 @@ control Egress(
         
 
         // PASS 6
-        low_bit_f_X = meta.Y & 0x1;
+        low_bit_f_X = hdr.ff_calc.Y & 0x1;
         
         // If low bit here
 
@@ -318,7 +309,7 @@ control Egress(
 
 
         // PASS 7
-        low_bit_f_X = meta.Y & 0x1;
+        low_bit_f_X = hdr.ff_calc.Y & 0x1;
         
         // If low bit here
 
@@ -329,20 +320,15 @@ control Egress(
         
 
         // PASS 8
-        low_bit_f_X = meta.Y & 0x1;
+        low_bit_f_X = hdr.ff_calc.Y & 0x1;
         
         // If low bit here
 
 
-        action_ff_mult();
+        action_ff_mult_end();
 
         // If high bit here
         
-
-
-        hdr.ethernet.ether_type = TYPE_RESPONSE;
-        hdr.ff_calc.X = meta.X;
-        hdr.ff_calc.result_X = meta.result_X;
     }
 }
 

@@ -127,7 +127,7 @@ control Ingress(
     inout ingress_intrinsic_metadata_for_deparser_t  ig_dprsr_md,
     inout ingress_intrinsic_metadata_for_tm_t        ig_tm_md)
 {
-    
+
     bit<8> high_bit_f_0;
     bit<8> high_bit_f_1;
     bit<8> high_bit_f_2;
@@ -145,7 +145,7 @@ control Ingress(
     bit<8> low_bit_f_5;
     bit<8> low_bit_f_6;
     bit<8> low_bit_f_7;
-    
+
     action action_ff_mult() {
         
         // ELEMENT 0
@@ -220,6 +220,7 @@ control Ingress(
     
 
     apply {
+
         // PASS 1
         low_bit_f_0 = hdr.ff_calc.b & 0x1;
         low_bit_f_1 = hdr.ff_calc.d & 0x1;
@@ -284,8 +285,6 @@ control Ingress(
 		if (high_bit_f_7 != 0)
 			hdr.ff_calc.o = hdr.ff_calc.o ^ IRRED_POLY;
 
-
-        
 
         // PASS 2
         low_bit_f_0 = hdr.ff_calc.b & 0x1;
@@ -362,7 +361,7 @@ control Ingress(
         low_bit_f_5 = hdr.ff_calc.l & 0x1;
         low_bit_f_6 = hdr.ff_calc.n & 0x1;
         low_bit_f_7 = hdr.ff_calc.p & 0x1;
-
+        
         // If low bit here
 		if (low_bit_f_0 != 0)
 			hdr.ff_calc.result_0 = hdr.ff_calc.result_0 ^ hdr.ff_calc.a;
@@ -483,7 +482,6 @@ control Ingress(
 			hdr.ff_calc.o = hdr.ff_calc.o ^ IRRED_POLY;
 
 
-        
     }
 }
 
@@ -636,7 +634,6 @@ control Egress(
 
 
 
-
     }
 
     action set_ethertype() {
@@ -649,7 +646,6 @@ control Egress(
     }
 
     apply {
-        
         
 
 
@@ -916,7 +912,6 @@ control Egress(
 		if (high_bit_f_7 != 0)
 			hdr.ff_calc.o = hdr.ff_calc.o ^ IRRED_POLY;
 
-        
         
     }
 }
