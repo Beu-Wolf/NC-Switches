@@ -1,280 +1,214 @@
-package spatial.tests.feature.transfers
-
-import argon.static.Sym
 import spatial.dsl._
+import spatial.lib.ML._
+import utils.io.files._
+import spatial.lang.{FileBus,FileEOFBus}
+import spatial.metadata.bounds._
 
 @spatial class FFMult_It_Pipe extends SpatialTest {
-  import spatial.lang.{AxiStream512, AxiStream512Bus}
-  // @struct case class AxiStream512(tdata: U512, tstrb: U64, tkeep: U64, tlast: Bit, tid: U8, tdest: U8, tuser: U64)
-  def main(args: Array[String]): Unit = {
-    // In/out buses here have type AxiStream512, meaning you can access all the axis fields in the Spatial source code (tdata, tstrb, tkeep, tlast, tid, tdest, tuser)
-    //  If you only care about the tdata field, you should use type U512 instead of AxiStream512
-    val inbus = StreamIn[AxiStream512](AxiStream512Bus(tid = 0, tdest = 0))
-    val outbus = StreamOut[AxiStream512](AxiStream512Bus(tid = 0, tdest = 1))
 
-    Accel {
-      val packet_use1 = FIFO[AxiStream512](2)
-      val packet_use2 = FIFO[AxiStream512](10)
-      val dummy_input_fifo = FIFO[U8](2)
-      val dummy_stage0_fifo = FIFO[U8](2)
-      val dummy_stage1_fifo = FIFO[U8](2)
-      val dummy_stage2_fifo = FIFO[U8](2)
-      val dummy_stage3_fifo = FIFO[U8](2)
-      val dummy_stage4_fifo = FIFO[U8](2)
-      val dummy_stage5_fifo = FIFO[U8](2)
-      val dummy_stage6_fifo = FIFO[U8](2)
-      val dummy_stage7_fifo = FIFO[U8](2)
-      //val coefs = LUT.fromFile[U8](4)("/home/daniel/Desktop/Taurus/mapreduce/app/test.csv")
-      val irred = 0x1b.to[U8] // Irreducible polynomial of GF(2^8)
+	val N = 1024
+	type T = U8
 
-      val result_0 = SRAM[U8](2)
-      val a_reg_0 = SRAM[U8](2)
-      val b_reg_0 = SRAM[U8](2)
+	def main(args: Array[String]): Unit = {
 
-      val result_1 = SRAM[U8](2)
-      val a_reg_1 = SRAM[U8](2)
-      val b_reg_1 = SRAM[U8](2)
+        val infile_a = buildPath(IR.config.genDir,"tungsten", "in_a.csv")
+        val infile_b = buildPath(IR.config.genDir,"tungsten", "in_b.csv")
+		
+		val outfile = buildPath(IR.config.genDir,"tungsten", "out.csv")
+		createDirectories(dirName(infile_a))
+		// createDirectories(dirName(infile_b))
+		val inputs = List.tabulate(N) {i => i % 256}
+		
+        writeCSVNow(inputs, infile_a)
+        writeCSVNow(inputs, infile_b)
 
-      val result_2 = SRAM[U8](2)
-      val a_reg_2 = SRAM[U8](2)
-      val b_reg_2 = SRAM[U8](2)
+		val stream_a_in  = StreamIn[T](FileBus[T](infile_a))
+		val stream_b_in  = StreamIn[T](FileBus[T](infile_b))
 
-      val result_3 = SRAM[U8](2)
-      val a_reg_3 = SRAM[U8](2)
-      val b_reg_3 = SRAM[U8](2)
+		val stream_out  = StreamOut[Tup2[I32,Bit]](FileEOFBus[Tup2[I32,Bit]](outfile))
 
-      val result_4 = SRAM[U8](2)
-      val a_reg_4 = SRAM[U8](2)
-      val b_reg_4 = SRAM[U8](2)
 
-      val result_5 = SRAM[U8](2)
-      val a_reg_5 = SRAM[U8](2)
-      val b_reg_5 = SRAM[U8](2)
+        Accel {
 
-      val result_6 = SRAM[U8](2)
-      val a_reg_6 = SRAM[U8](2)
-      val b_reg_6 = SRAM[U8](2)
+            // MULT 0 FIFOS
+			val result_0_stage0 = FIFO[T](4)
+			val a_stage0 = FIFO[T](4)
+			val b_stage0 = FIFO[T](4)
 
-      val result_7 = SRAM[U8](2)
-      val a_reg_7 = SRAM[U8](2)
-      val b_reg_7 = SRAM[U8](2)
+			val result_0_stage1 = FIFO[T](4)
+			val a_stage1 = FIFO[T](4)
+			val b_stage1 = FIFO[T](4)
 
-      Stream.Foreach(*) { stream_idx =>
+			val result_0_stage2 = FIFO[T](4)
+			val a_stage2 = FIFO[T](4)
+			val b_stage2 = FIFO[T](4)
 
-        val input = SRAM[U8](2) // Lets assume 4 multiplications for now
-        val result = Reg[U8]
+			val result_0_stage3 = FIFO[T](4)
+			val a_stage3 = FIFO[T](4)
+			val b_stage3 = FIFO[T](4)
 
-        Pipe {
-          val packet = inbus.value
-          packet_use1.enq(packet)
-          packet_use2.enq(packet)
-        }
+			val result_0_stage4 = FIFO[T](4)
+			val a_stage4 = FIFO[T](4)
+			val b_stage4 = FIFO[T](4)
 
-        Pipe {
-          // Get the necessary values from the packet. See the AD example
-          val packet = packet_use1.deq()
-          Parallel {
-            input(0) = packet.bits(7::0).as[U8]
-            input(1) = packet.bits(15::8).as[U8]
-          }
-          dummy_input_fifo.enq(input(1))
+			val result_0_stage5 = FIFO[T](4)
+			val a_stage5 = FIFO[T](4)
+			val b_stage5 = FIFO[T](4)
 
-        }
-        
-        Pipe {
-          val dummy = dummy_input_fifo.deq()
+			val result_0_stage6 = FIFO[T](4)
+			val a_stage6 = FIFO[T](4)
+			val b_stage6 = FIFO[T](4)
 
-          a_reg_0(0) = input(0)
-          b_reg_0(0) = input(1)
-          result_0(0) = 0 
+			val result_0_stage7 = FIFO[T](4)
 
-          if (b_reg_0(0).bit(0) == 1) {
-            result_0(1) = result_0(0) ^ a_reg_0(0)
-          }
 
-          if (a_reg_0(0).bit(7) == 1) {
-            a_reg_0(1) = (a_reg_0(0) << 1) ^ irred
-          } else {
-            a_reg_0(1) = a_reg_0(0) << 1
-          }
+            val irred = 0x11b.to[T] // Irreducible polynomial of GF(2^8) 
+            val mask_a = 0x1.to[T] << 7
 
-          b_reg_0(1) = b_reg_0(0) >> 1
+			Foreach(*) { p=>
+            
+                Pipe {
 
-          // OUTPUT a_reg_0(1) b_reg_0(1) result_0(1)
-          dummy_stage0_fifo.enq(result_0(1))
-        }
+                    // PASS 0
+                    val a = stream_a_in.value
+                    val b = stream_b_in.value
+                    
+                    val result_0 = 0
 
-        Pipe {
-          val dummy = dummy_stage0_fifo.deq()
+				    result_0_stage0.enq(mux(b.bit(0) == 1, result_0 ^ a, result_0))
 
-          a_reg_1(0) = a_reg_0(1)
-          b_reg_1(0) = b_reg_0(1)
-          result_1(0) = result_0(1) 
+                    val flag_a = (a & mask_a) == mask_a
 
-          if (b_reg_1(0).bit(0) == 1) {
-            result_1(1) = result_1(0) ^ a_reg_1(0)
-          }
 
-          if (a_reg_1(0).bit(7) == 1) {
-            a_reg_1(1) = (a_reg_1(0) << 1) ^ irred
-          } else {
-            a_reg_1(1) = a_reg_1(0) << 1
-          }
+                    a_stage0.enq(mux(flag_a, (a << 1) ^ irred, a << 1))
+                    b_stage0.enq(b >> 1)
+                    
 
-          b_reg_1(1) = b_reg_1(0) >> 1
+                }
 
-          // OUTPUT a_reg_1(1) b_reg_1(1) result_1(1)
-          dummy_stage1_fifo.enq(result_1(1))
-        }
+                Pipe {
 
-        Pipe {
-          val dummy = dummy_stage1_fifo.deq()
+                    // PASS 1
+                    val a = a_stage0.deq()
+                    val b = b_stage0.deq()
+                    
+                    val result_0 = result_0_stage0.deq()
 
-          a_reg_2(0) = a_reg_1(1)
-          b_reg_2(0) = b_reg_1(1)
-          result_2(0) = result_1(1) 
+				    result_0_stage1.enq(mux(b.bit(0) == 1, result_0 ^ a, result_0))
 
-          if (b_reg_2(0).bit(0) == 1) {
-            result_2(1) = result_2(0) ^ a_reg_2(0)
-          }
+                    val flag_a = (a & mask_a) == mask_a
 
-          if (a_reg_2(0).bit(7) == 1) {
-            a_reg_2(1) = (a_reg_2(0) << 1) ^ irred
-          } else {
-            a_reg_2(1) = a_reg_2(0) << 1
-          }
 
-          b_reg_2(1) = b_reg_2(0) >> 1
+                    a_stage1.enq(mux(flag_a, (a << 1) ^ irred, a << 1))
+                    b_stage1.enq(b >> 1)
 
-          // OUTPUT a_reg_2(1) b_reg_2(1) result_2(1)
-          dummy_stage2_fifo.enq(result_2(1))
-        }
+                }
+                
+                Pipe {
 
-        Pipe {
-          val dummy = dummy_stage2_fifo.deq()
+                    // PASS 2
+                    val a = a_stage1.deq()
+                    val b = b_stage1.deq()
+                    
+                    val result_0 = result_0_stage1.deq()
 
-          a_reg_3(0) = a_reg_2(1)
-          b_reg_3(0) = b_reg_2(1)
-          result_3(0) = result_2(1) 
+				    result_0_stage2.enq(mux(b.bit(0) == 1, result_0 ^ a, result_0))
 
-          if (b_reg_3(0).bit(0) == 1) {
-            result_3(1) = result_3(0) ^ a_reg_3(0)
-          }
+                    val flag_a = (a & mask_a) == mask_a
 
-          if (a_reg_3(0).bit(7) == 1) {
-            a_reg_3(1) = (a_reg_3(0) << 1) ^ irred
-          } else {
-            a_reg_3(1) = a_reg_3(0) << 1
-          }
 
-          b_reg_3(1) = b_reg_3(0) >> 1
+                    a_stage2.enq(mux(flag_a, (a << 1) ^ irred, a << 1))
+                    b_stage2.enq(b >> 1)
 
-          // OUTPUT a_reg_3(1) b_reg_3(1) result_3(1)
-          dummy_stage3_fifo.enq(result_3(1))
-        }
+                }
 
-        Pipe {
-          val dummy = dummy_stage3_fifo.deq()
+                Pipe {
 
-          a_reg_4(0) = a_reg_3(1)
-          b_reg_4(0) = b_reg_3(1)
-          result_4(0) = result_3(1) 
+                    // PASS 3
+                    val a = a_stage2.deq()
+                    val b = b_stage2.deq()
+                    
+                    val result_0 = result_0_stage2.deq()
 
-          if (b_reg_4(0).bit(0) == 1) {
-            result_4(1) = result_4(0) ^ a_reg_4(0)
-          }
+				    result_0_stage3.enq(mux(b.bit(0) == 1, result_0 ^ a, result_0))
 
-          if (a_reg_4(0).bit(7) == 1) {
-            a_reg_4(1) = (a_reg_4(0) << 1) ^ irred
-          } else {
-            a_reg_4(1) = a_reg_4(0) << 1
-          }
+                    val flag_a = (a & mask_a) == mask_a
 
-          b_reg_4(1) = b_reg_4(0) >> 1
 
-          // OUTPUT a_reg_4(1) b_reg_4(1) result_4(1)
-          dummy_stage4_fifo.enq(result_4(1))
-        }
+                    a_stage3.enq(mux(flag_a, (a << 1) ^ irred, a << 1))
+                    b_stage3.enq(b >> 1)
 
-        Pipe {
-          val dummy = dummy_stage4_fifo.deq()
+                }
 
-          a_reg_5(0) = a_reg_4(1)
-          b_reg_5(0) = b_reg_4(1)
-          result_5(0) = result_4(1) 
+                Pipe {
 
-          if (b_reg_5(0).bit(0) == 1) {
-            result_5(1) = result_5(0) ^ a_reg_5(0)
-          }
+                    // PASS 4
+                    val a = a_stage3.deq()
+                    val b = b_stage3.deq()
+                    
+                    val result_0 = result_0_stage3.deq()
 
-          if (a_reg_5(0).bit(7) == 1) {
-            a_reg_5(1) = (a_reg_5(0) << 1) ^ irred
-          } else {
-            a_reg_5(1) = a_reg_5(0) << 1
-          }
+				    result_0_stage4.enq(mux(b.bit(0) == 1, result_0 ^ a, result_0))
 
-          b_reg_5(1) = b_reg_5(0) >> 1
+                    val flag_a = (a & mask_a) == mask_a
 
-          // OUTPUT a_reg_5(1) b_reg_5(1) result_5(1)
-          dummy_stage5_fifo.enq(result_5(1))
-        }
 
-        Pipe {
-          val dummy = dummy_stage5_fifo.deq()
+                    a_stage4.enq(mux(flag_a, (a << 1) ^ irred, a << 1))
+                    b_stage4.enq(b >> 1)
 
-          a_reg_6(0) = a_reg_5(1)
-          b_reg_6(0) = b_reg_5(1)
-          result_6(0) = result_5(1) 
+                }
 
-          if (b_reg_6(0).bit(0) == 1) {
-            result_6(1) = result_6(0) ^ a_reg_6(0)
-          }
+                Pipe {
 
-          if (a_reg_6(0).bit(7) == 1) {
-            a_reg_6(1) = (a_reg_6(0) << 1) ^ irred
-          } else {
-            a_reg_6(1) = a_reg_6(0) << 1
-          }
+                    // PASS 5
+                    val a = a_stage4.deq()
+                    val b = b_stage4.deq()
+                    
+                    val result_0 = result_0_stage4.deq()
 
-          b_reg_6(1) = b_reg_6(0) >> 1
+                    result_0_stage5.enq(mux(b.bit(0) == 1, result_0 ^ a, result_0))
 
-          // OUTPUT a_reg_6(1) b_reg_6(1) result_6(1)
-          dummy_stage6_fifo.enq(result_6(1))
-        }
+                    val flag_a = (a & mask_a) == mask_a
 
-        Pipe {
-          val dummy = dummy_stage6_fifo.deq()
 
-          a_reg_7(0) = a_reg_6(1)
-          b_reg_7(0) = b_reg_6(1)
-          result_7(0) = result_6(1) 
+                    a_stage5.enq(mux(flag_a, (a << 1) ^ irred, a << 1))
+                    b_stage5.enq(b >> 1)
 
-          if (b_reg_7(0).bit(0) == 1) {
-            result_7(1) = result_7(0) ^ a_reg_7(0)
-          }
+                }
 
-          if (a_reg_7(0).bit(7) == 1) {
-            a_reg_7(1) = (a_reg_7(0) << 1) ^ irred
-          } else {
-            a_reg_7(1) = a_reg_7(0) << 1
-          }
+                Pipe {
+                    
+                    // PASS 6
+                    val a = a_stage5.deq()
+                    val b = b_stage5.deq()
+                    
+                    val result_0 = result_0_stage5.deq()
 
-          b_reg_7(1) = b_reg_7(0) >> 1
+				    result_0_stage6.enq(mux(b.bit(0) == 1, result_0 ^ a, result_0))
 
-          // OUTPUT a_reg_7(1) b_reg_7(1) result_7(1)
-          dummy_stage7_fifo.enq(result_7(1))
-        }
+                    val flag_a = (a & mask_a) == mask_a
 
-        Pipe {
-          val dummy = dummy_stage7_fifo.deq()
 
-          val packet = packet_use2.deq()
-          val newPacket = AxiStream512((packet.tdata.as[U512]) | (result_7(1).as[U512] << 504) , packet.tstrb, packet.tkeep, packet.tlast, packet.tid, 1, 0)
-          outbus := newPacket
-        }
-         
-      }
-    }
-    assert(1 == 1) // Assert keeps spatial happy
-  }
+                    a_stage6.enq(mux(flag_a, (a << 1) ^ irred, a << 1))
+                    b_stage6.enq(b >> 1)
+
+                }
+
+                Pipe {
+
+                    // PASS 7
+                    val a = a_stage6.deq()
+                    val b = b_stage6.deq()
+                    
+                    val result_0 = result_0_stage6.deq()
+
+				    result_0_stage7.enq(mux(b.bit(0) == 1, result_0 ^ a, result_0))
+                }
+
+                // STREAM OUT
+				stream_out := Tup2((result_0_stage7.deq()).to[I32], p == (N-1))
+            }
+		}
+		assert(true)
+	}
 }
