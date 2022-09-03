@@ -37,25 +37,22 @@ Any question feel free to reach me @<daniel.g.seara@tecnico.ulisboa.pt>
 
 ## 6 - Simple multiplication using Taurus
 
-[RPA_Taurus_Mult2_No_Sum](./FFA_Taurus_Switch/RPA_Taurus_2Operands/FFMult_It_Pipe.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus. This PoC performs a normal finite field multiplication between 2 operands, using RPA, in field GF(256). The program compiles but, as of yet, we haven't tested it in a Taurus simulation to extract any meaningfull results.
+[RPA_Taurus_Mult2_No_Sum](./FFA_Taurus_Switch/RPA_Taurus_2Operands/FFMult_It_Pipe.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus. This PoC performs a normal finite field multiplication between 2 operands, using RPA, in field GF(256). The program works in the Plasticine simulator and consumes a minimal amount of resources.
 
-## 7 - Multiplication of 4 Symbols and summation using Taurus
-
-[RPA_Taurus_Mult4_Sum](./FFA_Taurus_Switch/RPA_Taurus_Mul4_Sum/FFMult.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus, where we do 4 multiplications and sum them together, like a common Network Coding encoding operation. Although it compiles, we haven't actually tested it in a Taurus simulation to extract meaningfull results.
-
-## 8 - Simple division using Taurus
+## 7 - Simple division using Taurus
 
 [EBd_Taurus_Div2_No_Sum](./FFA_Taurus_Switch/EBd_Taurus_2Operands/FFDiv_It_Pipe.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus.
-This PoC performs normal finite field division betwenn 2 operands, using the EBd algorithm, in the field GF(256). The program compiles but has not been tested yet
-to extract any meaningfull metrics.
+This PoC performs normal finite field division between 2 operands, using the EBd algorithm, in the field GF(256). The program works in the Plasticine simulator and consumes a minimal amount of resources.
 
-## 9 - Simple inversion using Taurus
+## 8 - Simple inversion using Taurus
 
-[Inv_Taurus_Div2_No_Sum](./FFA_Taurus_Switch/Inv_Taurus_2Operands/FFInv_It_Pipe.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus. This PoC performs a normal finite field inversion of an operand, using the inversion algorithm, in the field GF(256). The program compiles but has not been tested yet to extract any meaningfull metrics.
+[Inv_Taurus_Div2_No_Sum](./FFA_Taurus_Switch/Inv_Taurus_2Operands/FFInv_It_Pipe.scala) - This is Spatial code for an FPGA, that follows the architecture of Taurus. This PoC performs a normal finite field inversion of an operand, using the inversion algorithm, in the field GF(256). The program works in the Plasticine simulator and consumes a minimal amount of resources.
 
 ## Bonus - Maximum simultaneous multiplications
 
 [MaxOperands_Mult](./MaxOperands_Mult/) - This folder contains `.py` generators capable of producing a valid `.p4` program to run in Tofino that performs several multiplications in parallel. With these generators, we can easily see the maximum number of simultaneous operations that Tofino can execute in parallel. For the Table multiplication, go [here](./MaxOperands_Mult/table_mult/bfrt_python/gen_table_mult_p4.py) and for the RPA multiplication, go [here](./MaxOperands_Mult/rpa_mult/bfrt_python/gen_rpa_mult_p4.py).
+
+[Taurus_MaxOperands_Mult](./FFA_Taurus_Switch/RPA_Taurus_2Operands/gen_scripts/) - This folder contains `.py` generators capable of producing a valid `.scala` Taurus program that performs several multiplications in parallel. With the generators, we can easily see the maximum number of simultaneous operations that Taurus can execute. We have two versions. One that performs the instructions for the iteration on all the multiplications inside a single `Pipe` block ([here](./FFA_Taurus_Switch/RPA_Taurus_2Operands/gen_scripts/gen_rpa_mult_par.py)), and another that copies 8 `Pipe` blocks for each multiplication in sequence ([here](./FFA_Taurus_Switch/RPA_Taurus_2Operands/gen_scripts/gen_rpa_mult_seq.py)).
 
 ## Some Considerations
 
